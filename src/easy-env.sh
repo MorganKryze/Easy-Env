@@ -1,5 +1,74 @@
 #!/bin/bash
 
+# === Display help message ===
+
+env-help() {
+    GREEN='\033[0;32m'
+    BLUE='\033[0;34m'
+    RED='\033[0;31m'
+    ORANGE='\033[0;33m'
+    RESET='\033[0m'
+
+    echo -e "\nWelcome to the Conda Environment Helper!\n"
+
+    echo -e "Here are all the Conda environment functions created to help you manage your environments.\n"
+
+    echo -e "Available functions:\n"
+    for func in env-install env-uninstall env-create env-remove env-list env-cleanup env-start env-stop env-help; do
+        echo -e "  ${BLUE}$func:${RESET}"
+        case "$func" in
+        "env-install")
+            echo -e "    Install Miniconda and initialize Conda.\n"
+            echo -e "    Usage: ${GREEN}env-install${RESET}"
+            ;;
+        "env-uninstall")
+            echo -e "    Uninstall Miniconda and its dependencies.\n"
+            echo -e "    Usage: ${GREEN}env-uninstall${RESET}"
+            ;;
+        "env-create")
+            echo -e "    Create a new Conda environment.\n"
+            echo -e "    Usage: ${GREEN}env-create${RESET} ${RED}[--language|-l] <language> [--version|-v] <version> [--name|-n] <env_name>${RESET}"
+            echo -e "      ${RED}--language, -l:${RESET} The programming language for the environment (python, dotnet, r)."
+            echo -e "      ${RED}--version, -v:${RESET} The version of the language to use."
+            echo -e "      ${RED}--name, -n:${RESET} The name of the environment to create."
+            ;;
+        "env-remove")
+            echo -e "    Remove a Conda environment.\n"
+            echo -e "    Usage: ${GREEN}env-remove${RESET} ${RED}<env_name> [-y]${RESET}"
+            echo -e "      ${RED}<env_name>:${RESET} The name of the environment to remove."
+            echo -e "      ${RED}-y:${RESET} [OPTIONAL] Confirm removal without prompting."
+            ;;
+        "env-list")
+            echo -e "    List Conda environments.\n"
+            echo -e "    Usage: ${GREEN}env-list${RESET} ${RED}[<language>]${RESET}"
+            echo -e "      ${RED}<language>:${RESET} [OPTIONAL] Filter environments by language (python, dotnet, r)."
+            ;;
+        "env-cleanup")
+            echo -e "    Clean cache and artifacts.\n"
+            echo -e "    Usage: ${GREEN}env-cleanup${RESET} ${RED}[-y]${RESET}"
+            echo -e "      ${RED}-y:${RESET} [OPTIONAL] Confirm cleanup without prompting."
+            ;;
+        "env-start")
+            echo -e "    Start a Conda environment.\n"
+            echo -e "    Usage: ${GREEN}env-start${RESET} ${RED}<env_name>${RESET}"
+            echo -e "      ${RED}<env_name>:${RESET} The name of the environment to start."
+            ;;
+        "env-stop")
+            echo -e "    Stop the active Conda environment.\n"
+            echo -e "    Usage: ${GREEN}env-stop${RESET}"
+            ;;
+        "env-help")
+            echo -e "    Display this help message.\n"
+            echo -e "    Usage: ${GREEN}env-help${RESET}"
+            ;;
+        *)
+            echo -e "  ${RED}No help text available.${RESET}"
+            ;;
+        esac
+        echo ""
+    done
+}
+
 # === Install Miniconda and initialize Conda ===
 
 env-install() {
