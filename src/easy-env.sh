@@ -171,6 +171,53 @@ env-remove() {
     fi
 }
 
+# === Start a Conda environment ===
+
+env-start() {
+    verify_conda || return 1
+
+    if [[ $# -ne 1 ]]; then
+        echo "env-start: Incorrect number of arguments."
+        echo "env-start: Usage: env-start <env_name>"
+        echo "env-start: ❌ Operation aborted. ❌"
+        return 1
+    fi
+
+    local env_name="$1"
+
+    echo "env-start: 🚀 Starting Conda environment: $env_name 🚀"
+    conda activate "$env_name"
+    if [[ $? -eq 0 ]]; then
+        echo "env-start: 🎉 Successfully started Conda environment: $env_name 🎉"
+        return 0
+    else
+        echo "env-start: ❌ Failed to start Conda environment. ❌"
+        return 1
+    fi
+}
+
+# === Stop a Conda environment ===
+
+env-stop() {
+    verify_conda || return 1
+
+    if [[ $# -ne 0 ]]; then
+        echo "env-stop: No arguments should be provided."
+        echo "env-stop: Usage: env-stop"
+        echo "env-stop: ❌ Operation aborted. ❌"
+        return 1
+    fi
+
+    echo "env-stop: 🛑 Stopping active Conda environment 🛑"
+    conda deactivate
+    if [[ $? -eq 0 ]]; then
+        echo "env-stop: 🎉 Successfully stopped active Conda environment. 🎉"
+        return 0
+    else
+        echo "env-stop: ❌ Failed to stop active Conda environment. ❌"
+        return 1
+    fi
+}
 
 # === List Conda environments ===
 
@@ -250,7 +297,6 @@ env-cleanup() {
         return 1
     fi
 }
-
 
 # === Check if conda is installed ===
 
