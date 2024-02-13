@@ -141,17 +141,27 @@ env-create() {
 env-remove() {
     verify_conda || return 1
 
-    if [[ $# -ne 1 ]]; then
+    if [[ $# -eq 0 || $# -gt 2 ]]; then
         echo "env-remove: Incorrect number of arguments."
-        echo "env-remove: Usage: env-remove <env_name>"
+        echo "env-remove: Usage: env-remove <env_name> [-y]"
         echo "env-remove: ❌ Operation aborted. ❌"
         return 1
     fi
 
-    env_name="$1"
+    local env_name="$1"
+    local yes_flag=""
+
+    if [[ $# -eq 2 && $2 == "-y" ]]; then
+        yes_flag="--yes"
+    elif [[ $# -eq 2 && $2 != "-y" ]]; then
+        echo "env-remove: Invalid option: $2"
+        echo "env-remove: Usage: env-remove <env_name> [-y]"
+        echo "env-remove: ❌ Operation aborted. ❌"
+        return 1
+    fi
 
     echo "env-remove: 🛠️ Removing Conda environment: $env_name 🛠️"
-    conda remove --name "$env_name" --all
+    conda remove --name "$env_name" --all $yes_flag
     if [[ $? -eq 0 ]]; then
         echo "env-remove: 🎉 Successfully removed Conda environment: $env_name 🎉"
         return 0
@@ -160,6 +170,7 @@ env-remove() {
         return 1
     fi
 }
+
 
 # === List Conda environments ===
 
@@ -207,6 +218,39 @@ env-list() {
         fi
     fi
 }
+
+# === Clean cache and artefacts ===
+
+env-cleanup() {
+    verify_conda || return 1
+
+    local yes_flag=""
+
+    if [[ $# -eq 1 && $1 == "-y" ]]; then
+        yes_flag="--yes"
+    elif [[ $# -eq 1 && $1 != "-y" ]]; then
+        echo "env-cleanup: Invalid option: $1"
+        echo "env-cleanup: Usage: env-cleanup [-y]"
+        echo "env-cleanup: ❌ Operation aborted. ❌"
+        return 1
+    elif [[ $# -gt 1 ]]; then
+        echo "env-cleanup: Incorrect number of arguments."
+        echo "env-cleanup: Usage: env-cleanup [-y]"
+        echo "env-cleanup: ❌ Operation aborted. ❌"
+        return 1
+    fi
+
+    echo "env-cleanup: 🛠️ Cleaning Conda environment 🛠️"
+    conda clean --all $yes_flag
+    if [[ $? -eq 0 ]]; then
+        echo "env-cleanup: 🎉 Conda environment cleaned successfully! 🎉"
+        return 0
+    else
+        echo "env-cleanup: ❌ Failed to clean Conda environment. ❌"
+        return 1
+    fi
+}
+
 
 # === Check if conda is installed ===
 
