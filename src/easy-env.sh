@@ -71,30 +71,22 @@ env-uninstall() {
 # === Create a Conda environment ===
 
 env-create() {
-    if [[ $# -lt 3 || $# -gt 5 ]]; then
-        echo "env-create: Incorrect number of arguments."
-        echo "env-create: Usage: env-create <env_name> <language> [-v|--version] <version>"
-        echo "env-create: Supported languages: python, dotnet, r"
-        echo "env-create: ❌ Operation aborted. ❌"
-        return 1
-    fi
-
-    if [[ -z $1 || -z $2 ]]; then
-        echo "env-create: Please provide environment name and language."
-        echo "env-create: Usage: env-create <env_name> <language> [-v|--version] <version>"
-        echo "env-create: Supported languages: python, dotnet, r"
-        echo "env-create: ❌ Operation aborted. ❌"
-        return 1
-    fi
-
-    env_name="$1"
-    language="$2"
-    version=""
+    local language=""
+    local version=""
+    local env_name=""
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
+        -l | --language)
+            language="$2"
+            shift 2
+            ;;
         -v | --version)
             version="$2"
+            shift 2
+            ;;
+        -n | --name)
+            env_name="$2"
             shift 2
             ;;
         *)
@@ -103,30 +95,30 @@ env-create() {
         esac
     done
 
-    if [[ -z $version ]]; then
-        case $language in
-        python)
-            version=$(conda search --json "$language" | jq -r '.["data"] | .[0] | .["version"]')
-            ;;
-        dotnet)
-            version=$(conda search --json "$language-sdk" | jq -r '.["data"] | .[0] | .["version"]')
-            ;;
-        r)
-            version=$(conda search --json r-base | jq -r '.["data"] | .[0] | .["version"]')
-            ;;
-        *)
-            echo "env-create: Unsupported language: $language"
-            echo "env-create: Supported languages: python, dotnet, r"
-            echo "env-create: ❌ Operation aborted. ❌"
-            return 1
-            ;;
-        esac
+    if [[ -z $language || -z $version || -z $env_name ]]; then
+        echo "env-create: Please provide language, version, and environment name."
+        echo "env-create: Usage: env-create [--language|-l] <language> [--version|-v] <version> [--name|-n] <env_name>"
+        echo "env-create: Supported languages: python, dotnet, r"
+        echo "env-create: ❌ Operation aborted. ❌"
+        return 1
     fi
 
     case $language in
-    python) ;;
-    dotnet) ;;
-    r) ;;
+    python)
+        env_name="py-${env_name}"
+        echo "env-create: 🛠️ Creating Python Conda environment: $env_name with Python $version 🛠️"
+        conda create -n "$env_name" python="$version"
+        ;;
+    dotnet)
+        env_name="cs-${env_name}"
+        echo "env-create: 🛠️ Creating .NET Conda environment: $env_name with .NET $version 🛠️"
+        conda create -n "$env_name" -c conda-forge dotnet-sdk="$version"
+        ;;
+    r)
+        env_name="R-${env_name}"
+        echo "env-create: 🛠️ Creating R Conda environment: $env_name with R $version 🛠️"
+        conda create -n "$env_name" -c conda-forge r-base="$version"
+        ;;
     *)
         echo "env-create: Unsupported language: $language"
         echo "env-create: Supported languages: python, dotnet, r"
@@ -135,13 +127,11 @@ env-create() {
         ;;
     esac
 
-    echo "env-create: 🛠️ Creating Conda environment: $env_name with $language $version 🛠️"
-    conda create -n "$env_name" "$language"="$version"
     if [[ $? -eq 0 ]]; then
-        echo "env-create: 🎉 Successfully created Conda environment: $env_name with $language $version 🎉"
+        echo "env-create: 🎉 Successfully created $language Conda environment: $env_name with $language $version 🎉"
         return 0
     else
-        echo "env-create: ❌ Failed to create Conda environment. ❌"
+        echo "env-create: ❌ Failed to create $language Conda environment. ❌"
         return 1
     fi
 }
@@ -183,19 +173,40 @@ env-list() {
         return 1
     fi
 
+    local language=""
+
     if [[ $# -eq 1 ]]; then
-        language="$1"
+        case "$1" in
+        dotnet | cs | CS | csharp)
+            language="cs"
+            ;;
+        r | R)
+            language="R"
+            ;;
+        python | Python | py)
+            language="py"
+            ;;
+        *)
+            echo "env-list: Unsupported language: $1"
+            echo "env-list: ❌ Operation aborted. ❌"
+            return 1
+            ;;
+        esac
     fi
 
-    echo "env-list: 📋 Listing Conda environments"
+    echo "env-list: 📋 Listing Conda environments\n"
 
     if [[ -z $language ]]; then
         conda env list
     else
-        conda env list | grep "$language"
+        local result=$(conda env list | grep -E "^$language-")
+        if [[ -z $result ]]; then
+            echo "env-list: No environments found for language: $language"
+        else
+            echo "$result\n"
+        fi
     fi
 }
-
 
 # === Check if conda is installed ===
 
