@@ -141,6 +141,8 @@ env-uninstall() {
 # === Update git and conda ===
 
 env-update() {
+    verify_conda || return 1
+
     if [[ $# -ne 0 ]]; then
         echo "env-update: No arguments should be provided."
         echo "env-update: Usage: env-update"
@@ -168,6 +170,8 @@ env-update() {
 # === Create a Conda environment ===
 
 env-create() {
+    verify_conda || return 1
+    
     local language=""
     local version=""
     local env_name=""
@@ -208,7 +212,7 @@ env-create() {
         if [[ $? -eq 0 ]]; then
             echo "env-create: 🎉 Successfully created Python Conda environment: $env_name with Python $version 🎉"
             echo "env-create: 📚 Recommended libraries: numpy, pandas, matplotlib"
-            echo "env-create: 📚 To use Jupyter, install it with: conda install -n $env_name jupyter 📚"
+            echo "env-create: 📚 To use Jupyter, install it with: conda install jupyter ipykernel 📚"
         else
             echo "env-create: ❌ Failed to create Python Conda environment. ❌"
             return 1
@@ -221,6 +225,7 @@ env-create() {
         if [[ $? -eq 0 ]]; then
             echo "env-create: 🎉 Successfully created .NET Conda environment: $env_name with .NET $version 🎉"
             echo "env-create: 📚 Recommended libraries: Newtonsoft.Json, Microsoft.Extensions.DependencyInjection"
+            echo "env-create: 📚 To use Jupyter, refer to this page: https://github.com/dotnet/interactive/blob/main/docs/NotebookswithJupyter.md 📚"
         else
             echo "env-create: ❌ Failed to create .NET Conda environment. ❌"
             return 1
@@ -233,6 +238,7 @@ env-create() {
         if [[ $? -eq 0 ]]; then
             echo "env-create: 🎉 Successfully created R Conda environment: $env_name with the latest version 🎉"
             echo "env-create: 📚 Recommended libraries: dplyr, ggplot2, tidyr"
+            echo "env-create: 📚 To use Jupyter, install it with: conda install jupyter r-irkernel📚"
         else
             echo "env-create: ❌ Failed to create R Conda environment. ❌"
             return 1
