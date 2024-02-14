@@ -14,7 +14,7 @@ env-help() {
     echo -e "Here are all the Conda environment functions created to help you manage your environments.\n"
 
     echo -e "Available functions:\n"
-    for func in env-install env-uninstall env-update env-create env-remove env-list env-cleanup env-start env-stop env-help; do
+    for func in env-install env-uninstall env-update env-create env-remove env-list env-cleanup env-start env-stop; do
         echo -e "  ${BLUE}$func:${RESET}"
         case "$func" in
         "env-install")
@@ -61,10 +61,6 @@ env-help() {
         "env-stop")
             echo -e "    Stop the active Conda environment.\n"
             echo -e "    Usage: ${GREEN}env-stop${RESET}"
-            ;;
-        "env-help")
-            echo -e "    Display this help message.\n"
-            echo -e "    Usage: ${GREEN}env-help${RESET}"
             ;;
         *)
             echo -e "  ${RED}No help text available.${RESET}"

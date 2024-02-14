@@ -61,7 +61,33 @@ You may need to restart your terminal to use the commands below.
 
 ### Usage
 
-Detail here the instructions to use the project.
+try to run the following command to check that the commands are installed and accessible:
+
+```sh
+env-help
+```
+
+If you encounter an error, refer to the [Troubleshooting](#troubleshooting) section.
+
+You may now use these commands:
+
+- `env-help`: Display the help message.
+- `env-install`: Install the Miniconda.
+- `env-uninstall`: Uninstall MiniConda, its dependencies and related and environment variables.
+- `env-update`: Update the project along with Conda and related packages.
+- `env-create`: Create a new Conda environment.
+- `env-remove`: Remove a given Conda environment.
+- `env-start`: Activate a given Conda environment.
+- `env-stop`: Deactivate the current Conda environment.
+- `env-start`: Activate a given Conda environment.
+- `env-list`: List all Conda environments (can pass the language as argument).
+- `env-cleanup`: Clean the Conda cache and unused files.
+
+> [!TIP]
+> Run the `env-cleanup` command to save some space on your computer. Downloaded packages and sdk can take a lot of space.
+
+> [!TIP]
+> Run the `env-update` command to update the project and Conda regularly.
 
 ### Troubleshooting
 
