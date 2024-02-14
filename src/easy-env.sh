@@ -226,6 +226,7 @@ env-create() {
             echo "env-create: 🎉 Successfully created .NET Conda environment: $env_name with .NET $version 🎉"
             echo "env-create: 📚 Recommended libraries: Newtonsoft.Json, Microsoft.Extensions.DependencyInjection"
             echo "env-create: 📚 To use Jupyter, refer to this page: https://github.com/dotnet/interactive/blob/main/docs/NotebookswithJupyter.md 📚"
+            echo "env-create: 📚 if the ressoruce is not available anymore, an archive is available at: Easy-Env > src > assets > docs > interactive 📚"
         else
             echo "env-create: ❌ Failed to create .NET Conda environment. ❌"
             return 1

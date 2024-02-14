@@ -104,7 +104,10 @@ Easy-Env
 ├── src
 │   ├── assets
 │   │   └── img
-│   │       └── screenshot.png
+│   │   │   └── screenshot.png
+│   │   └── docs
+│   │       └── interactive-archive
+│   │           └── dotnet-jupyter-archive.md
 │   └── easy-env.sh
 ├── .gitignore
 ├── add-commands.sh
@@ -132,6 +135,10 @@ The main file of the project. It contains the commands of the project.
 ##### `add-commands.sh`
 
 A file to add the commands to your shell configuration file (e.g. `~/.zshrc`).
+
+##### `dotnet-jupyter-archive.md`
+
+An archive of the interactive middleware to use .NET in Jupyter from the [official documentation](https://github.com/dotnet/interactive?tab=MIT-1-ov-file) (license included).
 
 ## Supported platforms
 
