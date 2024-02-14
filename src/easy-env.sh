@@ -160,6 +160,8 @@ env-update() {
     fi
 
     echo "env-update: 🛠️ Pulling latest changes 🛠️"
+    cd "$repo_path"
+
     git pull origin main
 
     cd -
