@@ -75,19 +75,23 @@ You may now use these commands:
 - `env-install`: Install the Miniconda.
 - `env-uninstall`: Uninstall MiniConda, its dependencies and related and environment variables.
 - `env-update`: Update the project along with Conda and related packages.
+
+> [!TIP]
+> Run the `env-update` command to update the project and Conda regularly.
+
 - `env-create`: Create a new Conda environment.
 - `env-remove`: Remove a given Conda environment.
 - `env-start`: Activate a given Conda environment.
 - `env-stop`: Deactivate the current Conda environment.
-- `env-start`: Activate a given Conda environment.
+
+> [!TIP]
+> The packages that you want to install will be done manually using the integrated package manager of the language (e.g. pip for Python).
+
 - `env-list`: List all Conda environments (can pass the language as argument).
 - `env-cleanup`: Clean the Conda cache and unused files.
 
 > [!TIP]
 > Run the `env-cleanup` command to save some space on your computer. Downloaded packages and sdk can take a lot of space.
-
-> [!TIP]
-> Run the `env-update` command to update the project and Conda regularly.
 
 ### Troubleshooting
 
