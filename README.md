@@ -44,21 +44,6 @@ sh add-commands.sh
 
 You may need to restart your terminal to use the commands below.
 
-> [!NOTE]
-> Do not hesitate to add a note if necessary.
-
-> [!TIP]
-> Do not hesitate to add a tip if necessary.
-
-> [!WARNING]
-> Do not hesitate to add a warning if necessary.
-
-> [!IMPORTANT]
-> Do not hesitate to add an important note if necessary.
-
-> [!CAUTION]
-> Do not hesitate to add a caution if necessary.
-
 ### Usage
 
 try to run the following command to check that the commands are installed and accessible:
