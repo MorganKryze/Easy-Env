@@ -69,7 +69,7 @@ You may now use these commands:
 - `env-start`: Activate a given Conda environment.
 - `env-stop`: Deactivate the current Conda environment.
 
-> [!TIP]
+> [!NOTE]
 > The packages that you want to install will be done manually using the integrated package manager of the language (e.g. pip for Python).
 
 - `env-list`: List all Conda environments (can pass the language as argument).
