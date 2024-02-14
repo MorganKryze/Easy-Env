@@ -163,13 +163,13 @@ env-update() {
     cd "$repo_path"
 
     git pull origin main
-
-    cd -
-
+    
     if [[ $? -ne 0 ]]; then
         echo "env-update: ❌ Failed to update git repository. ❌"
         return 1
     fi
+
+    cd -
 
     echo "env-update: 🔄 Updating Conda 🔄"
     conda update conda
