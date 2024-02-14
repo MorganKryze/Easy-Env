@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # === Define the path to the script ===
 
