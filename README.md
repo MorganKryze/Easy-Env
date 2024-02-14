@@ -1,6 +1,6 @@
-# Repository-Template
+# Easy Env
 
-> Add a short description of the project here.
+> A set of bash commands to easily manage conda environments and miniconda.
 
 ![screenshot](./src/assets/img/screenshot.jpg)
 
@@ -8,18 +8,41 @@
 
 ### Introduction
 
-Provide an introduction to the project. This section should be short and concise. It may include a link to an important [reference](https://example.com).
+Easy Env is a small utility to simplify the management of conda environments and installation of miniconda. It is a set of bash commands that can be used to create, remove, and list conda environments. To learn more about what is conda, you can visit the [official website](https://docs.conda.io/en/latest/).
 
 ### Prerequisites
 
-- Define tools and libraries that are required to run the project with the version number.
-- If available, provide a link to the installation guide.
+- terminal on bash or zsh
 
 ### Install
 
-Details here explicit instructions to install the project.
+Get into your terminal in your home directory or where you want to install the project (somewhere stable).
 
-Here are the info blocks available for github markdown:
+To go to your home directory, use the following command:
+
+```sh
+cd ~
+```
+
+To install the project, download the .zip file from github or use the following command:
+
+```sh
+git clone https://github.com/MorganKryze/Easy-Env.git
+```
+
+Then, go to the project directory:
+
+```sh
+cd Easy-Env
+```
+
+You can add the commands to your shell configuration file (e.g. `~/.zshrc`). To do so, use the following command:
+
+```sh
+sh add-commands.sh
+```
+
+You may need to restart your terminal to use the commands below.
 
 > [!NOTE]
 > Do not hesitate to add a note if necessary.
@@ -36,30 +59,39 @@ Here are the info blocks available for github markdown:
 > [!CAUTION]
 > Do not hesitate to add a caution if necessary.
 
-### Build & Run
-
-Detail here the instructions to build and run the project.
-
 ### Usage
 
 Detail here the instructions to use the project.
 
 ### Troubleshooting
 
-Detail here the troubleshooting of the project.
+If you encounter this error message (or for any command):
+
+```plaintext
+zsh: command not found: env-help
+```
+
+You may not have add the path to the `easy-env.sh` file to your shell configuration file (e.g. `~/.zshrc`) or moved the project directory.
+
+Then redo the following command and restart your terminal (or add manually the path to your .zshrc located in `~/.zshrc`):
+
+```sh
+sh add-commands.sh
+```
 
 ### Project structure
 
-Here are the most important files and directories of the project( you may ignore the other files and directories):
+Here are the most important files and directories of the project (you may ignore the other files and directories):
 
 ```plaintext
-Repository-Template
+Easy-Env
 ├── src
 │   ├── assets
 │   │   └── img
 │   │       └── screenshot.png
-│   └── project-code.sh
+│   └── easy-env.sh
 ├── .gitignore
+├── add-commands.sh
 ├── SECURITY
 ├── CODE_OF_CONDUCT
 ├── CONTRIBUTING
@@ -77,25 +109,32 @@ This directory contains the source code of the project.
 
 This directory contains the assets of the project.
 
-##### Files
+##### `easy-env.sh`
 
-If necessary, provide a description of the most important files of the project.
+The main file of the project. It contains the commands of the project.
+
+##### `add-commands.sh`
+
+A file to add the commands to your shell configuration file (e.g. `~/.zshrc`).
 
 ## Supported platforms
 
-- Precise here the platforms that are supported by the project.
-- If available, provide a link to the installation guide.
-- If in testing, do not hesitate to mention it.
+(Tested on MacOS)
+
+- zsh
+- bash
 
 ## Supported languages
 
-- Precise here the languages that are supported by the project.
-- If necessary, precise if some languages needs to be checked.
+- .NET
+- Python
+- R
 
 ## Future improvements
 
-- Precise here the future improvements that are planned for the project.
-- ~~Imporvement done can be styled like this.~~
+- Compatibility with other shells
+- Add more commands to manage conda environments
+- Add more languages support
 
 ## Contributing
 

@@ -14,7 +14,7 @@ env-help() {
     echo -e "Here are all the Conda environment functions created to help you manage your environments.\n"
 
     echo -e "Available functions:\n"
-    for func in env-install env-uninstall env-create env-remove env-list env-cleanup env-start env-stop env-help env-pkg; do
+    for func in env-install env-uninstall env-update env-create env-remove env-list env-cleanup env-start env-stop env-help; do
         echo -e "  ${BLUE}$func:${RESET}"
         case "$func" in
         "env-install")
@@ -25,6 +25,11 @@ env-help() {
             echo -e "    Uninstall Miniconda and its dependencies.\n"
             echo -e "    Usage: ${GREEN}env-uninstall${RESET}"
             ;;
+        "env-update")
+            echo -e "    Update git repository and Conda.\n"
+            echo -e "    Usage: ${GREEN}env-update${RESET}"
+            ;;
+
         "env-create")
             echo -e "    Create a new Conda environment.\n"
             echo -e "    Usage: ${GREEN}env-create${RESET} ${RED}[--language|-l] <language> [--version|-v] <version> [--name|-n] <env_name>${RESET}"
@@ -61,13 +66,6 @@ env-help() {
             echo -e "    Display this help message.\n"
             echo -e "    Usage: ${GREEN}env-help${RESET}"
             ;;
-        "env-pkg")
-            echo -e "    Add or remove packages from the active Conda environment.\n"
-            echo -e "    Usage: ${GREEN}env-pkg${RESET} ${RED}[--add|-a|--remove|-r] <package_name>${RESET}"
-            echo -e "      ${RED}--add, -a:${RESET} Add a package to the active environment."
-            echo -e "      ${RED}--remove, -r:${RESET} Remove a package from the active environment."
-            echo -e "      ${RED}<package_name>:${RESET} The name of the package to add or remove."
-            ;;
         *)
             echo -e "  ${RED}No help text available.${RESET}"
             ;;
@@ -75,7 +73,6 @@ env-help() {
         echo ""
     done
 }
-
 
 # === Install Miniconda and initialize Conda ===
 
@@ -143,6 +140,33 @@ env-uninstall() {
     rm -rf ~/.conda ~/.condarc ~/.continuum
 
     echo "env-uninstall: 🎉 Miniconda uninstallation complete! Though, do not forget to remove the conda initialization in your .zshrc! 🎉"
+}
+
+# === Update git and conda ===
+
+env-update() {
+    if [[ $# -ne 0 ]]; then
+        echo "env-update: No arguments should be provided."
+        echo "env-update: Usage: env-update"
+        echo "env-update: ❌ Operation aborted. ❌"
+        return 1
+    fi
+
+    echo "env-update: 🔄 Updating git repository 🔄"
+    git pull
+    if [[ $? -ne 0 ]]; then
+        echo "env-update: ❌ Failed to update git repository. ❌"
+        return 1
+    fi
+
+    echo "env-update: 🔄 Updating Conda 🔄"
+    conda update conda
+    if [[ $? -ne 0 ]]; then
+        echo "env-update: ❌ Failed to update Conda. ❌"
+        return 1
+    fi
+
+    echo "env-update: 🎉 Git and Conda update successful! 🎉"
 }
 
 # === Create a Conda environment ===
@@ -310,90 +334,6 @@ env-stop() {
         echo "env-stop: ❌ Failed to stop active Conda environment. ❌"
         return 1
     fi
-}
-
-# === Add or remove a package from a Conda environment ===
-
-env-pkg() {
-    verify_conda || return 1
-
-    if [[ $# -lt 2 ]]; then
-        echo "env-pkg: Insufficient arguments."
-        echo "env-pkg: Usage: env-pkg [--add|-a|--remove|-r] <package_name>"
-        echo "env-pkg: ❌ Operation aborted. ❌"
-        return 1
-    fi
-
-    local action=""
-    local package_name=""
-    local conda_env=""
-
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-        -a | --add)
-            action="add"
-            shift
-            ;;
-        -r | --remove)
-            action="remove"
-            shift
-            ;;
-        *)
-            package_name="$1"
-            shift
-            ;;
-        esac
-    done
-
-    if [[ -z $action ]]; then
-        echo "env-pkg: Please specify an action: --add or --remove"
-        echo "env-pkg: Usage: env-pkg [--add|-a|--remove|-r] <package_name>"
-        echo "env-pkg: ❌ Operation aborted. ❌"
-        return 1
-    fi
-
-    if [[ -z $package_name ]]; then
-        echo "env-pkg: Please provide a package name."
-        echo "env-pkg: Usage: env-pkg [--add|-a|--remove|-r] <package_name>"
-        echo "env-pkg: ❌ Operation aborted. ❌"
-        return 1
-    fi
-
-    if [[ -z $CONDA_DEFAULT_ENV ]]; then
-        echo "env-pkg: No Conda environment activated."
-        echo "env-pkg: Please activate a Conda environment first."
-        echo "env-pkg: ❌ Operation aborted. ❌"
-        return 1
-    else
-        conda_env="$CONDA_DEFAULT_ENV"
-    fi
-
-    case $action in
-    "add")
-        echo "env-pkg: 🛠️ Adding package '$package_name' to environment '$conda_env'. 🛠️"
-        conda install -n "$conda_env" "$package_name"
-        if [[ $? -eq 0 ]]; then
-            echo "env-pkg: 🎉 Successfully added package '$package_name' to environment '$conda_env' 🎉"
-        else
-            echo "env-pkg: ❌ Failed to add package '$package_name' to environment '$conda_env' ❌"
-        fi
-        ;;
-    "remove")
-        echo "env-pkg: Removing package '$package_name' from environment '$conda_env'..."
-        conda remove -n "$conda_env" "$package_name"
-        if [[ $? -eq 0 ]]; then
-            echo "env-pkg: 🎉 Successfully removed package '$package_name' from environment '$conda_env' 🎉"
-        else
-            echo "env-pkg: ❌ Failed to remove package '$package_name' from environment '$conda_env' ❌"
-        fi
-        ;;
-    *)
-        echo "env-pkg: Unsupported action: $action"
-        echo "env-pkg: Please specify either --add or --remove"
-        echo "env-pkg: ❌ Operation aborted. ❌"
-        return 1
-        ;;
-    esac
 }
 
 # === List Conda environments ===
