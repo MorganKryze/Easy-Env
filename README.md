@@ -12,6 +12,7 @@ Easy Env is a small utility to simplify the management of conda environments and
 
 ### Prerequisites
 
+- [Git](https://git-scm.com/downloads)
 - terminal on bash or zsh
 
 ### Install
