@@ -43,11 +43,11 @@ You can add the commands to your shell configuration file (e.g. `~/.zshrc`). To 
 sh add-commands.sh
 ```
 
-You may need to restart your terminal to use the commands below.
+You will need to restart your terminal to use the commands below.
 
 ### Usage
 
-try to run the following command to check that the commands are installed and accessible:
+Try to run the following command to check that the commands are installed and accessible:
 
 ```sh
 env-help
@@ -103,7 +103,7 @@ Here are the most important files and directories of the project (you may ignore
 Easy-Env
 ├── src
 │   ├── assets
-│   │   └── img
+│   │   ├── img
 │   │   │   └── screenshot.png
 │   │   └── docs
 │   │       └── interactive-archive

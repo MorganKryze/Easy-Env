@@ -151,7 +151,19 @@ env-update() {
     fi
 
     echo "env-update: 🔄 Updating git repository 🔄"
-    git pull
+    local repo_path="$EASY_ENV_PATH"
+
+    if [ ! -d "$repo_path/.git" ]; then
+        echo "git: Repository directory not found or not a Git repository."
+        echo "git: ❌ Operation aborted. ❌"
+        return 1
+    fi
+
+    echo "env-update: 🛠️ Pulling latest changes 🛠️"
+    git pull origin main
+
+    cd -
+
     if [[ $? -ne 0 ]]; then
         echo "env-update: ❌ Failed to update git repository. ❌"
         return 1
@@ -164,7 +176,7 @@ env-update() {
         return 1
     fi
 
-    echo "env-update: 🎉 Git and Conda update successful! 🎉"
+    echo "env-update: 🎉 Easy-Env and Conda update successful! 🎉"
 }
 
 # === Create a Conda environment ===
