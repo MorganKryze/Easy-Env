@@ -14,7 +14,7 @@ env-help() {
     echo -e "Here are all the Conda environment functions created to help you manage your environments.\n"
 
     echo -e "Available functions:\n"
-    for func in env-install env-uninstall env-create env-remove env-list env-cleanup env-start env-stop env-help; do
+    for func in env-install env-uninstall env-create env-remove env-list env-cleanup env-start env-stop env-help env-pkg; do
         echo -e "  ${BLUE}$func:${RESET}"
         case "$func" in
         "env-install")
@@ -61,6 +61,13 @@ env-help() {
             echo -e "    Display this help message.\n"
             echo -e "    Usage: ${GREEN}env-help${RESET}"
             ;;
+        "env-pkg")
+            echo -e "    Add or remove packages from the active Conda environment.\n"
+            echo -e "    Usage: ${GREEN}env-pkg${RESET} ${RED}[--add|-a|--remove|-r] <package_name>${RESET}"
+            echo -e "      ${RED}--add, -a:${RESET} Add a package to the active environment."
+            echo -e "      ${RED}--remove, -r:${RESET} Remove a package from the active environment."
+            echo -e "      ${RED}<package_name>:${RESET} The name of the package to add or remove."
+            ;;
         *)
             echo -e "  ${RED}No help text available.${RESET}"
             ;;
@@ -68,6 +75,7 @@ env-help() {
         echo ""
     done
 }
+
 
 # === Install Miniconda and initialize Conda ===
 
@@ -164,8 +172,8 @@ env-create() {
         esac
     done
 
-    if [[ -z $language || -z $version || -z $env_name ]]; then
-        echo "env-create: Please provide language, version, and environment name."
+    if [[ -z $language || -z $env_name ]]; then
+        echo "env-create: Please provide language and environment name."
         echo "env-create: Usage: env-create [--language|-l] <language> [--version|-v] <version> [--name|-n] <env_name>"
         echo "env-create: Supported languages: python, dotnet, r"
         echo "env-create: ❌ Operation aborted. ❌"
@@ -176,18 +184,41 @@ env-create() {
     python)
         env_name="py-${env_name}"
         echo "env-create: 🛠️ Creating Python Conda environment: $env_name with Python $version 🛠️"
-        conda create -n "$env_name" python="$version"
+        conda create -n "$env_name" python="$version" -y
+        if [[ $? -eq 0 ]]; then
+            echo "env-create: 🎉 Successfully created Python Conda environment: $env_name with Python $version 🎉"
+            echo "env-create: 📚 Recommended libraries: numpy, pandas, matplotlib"
+            echo "env-create: 📚 To use Jupyter, install it with: conda install -n $env_name jupyter 📚"
+        else
+            echo "env-create: ❌ Failed to create Python Conda environment. ❌"
+            return 1
+        fi
         ;;
     dotnet)
         env_name="cs-${env_name}"
         echo "env-create: 🛠️ Creating .NET Conda environment: $env_name with .NET $version 🛠️"
-        conda create -n "$env_name" -c conda-forge dotnet-sdk="$version"
+        conda create -n "$env_name" -c conda-forge dotnet-sdk="$version" -y
+        if [[ $? -eq 0 ]]; then
+            echo "env-create: 🎉 Successfully created .NET Conda environment: $env_name with .NET $version 🎉"
+            echo "env-create: 📚 Recommended libraries: Newtonsoft.Json, Microsoft.Extensions.DependencyInjection"
+        else
+            echo "env-create: ❌ Failed to create .NET Conda environment. ❌"
+            return 1
+        fi
         ;;
     r)
         env_name="R-${env_name}"
-        echo "env-create: 🛠️ Creating R Conda environment: $env_name with R $version 🛠️"
-        conda create -n "$env_name" -c conda-forge r-base="$version"
+        echo "env-create: 🛠️ Creating R Conda environment: $env_name with the latest version 🛠️"
+        conda create -n "$env_name" -c conda-forge r-base -y
+        if [[ $? -eq 0 ]]; then
+            echo "env-create: 🎉 Successfully created R Conda environment: $env_name with the latest version 🎉"
+            echo "env-create: 📚 Recommended libraries: dplyr, ggplot2, tidyr"
+        else
+            echo "env-create: ❌ Failed to create R Conda environment. ❌"
+            return 1
+        fi
         ;;
+
     *)
         echo "env-create: Unsupported language: $language"
         echo "env-create: Supported languages: python, dotnet, r"
@@ -196,13 +227,16 @@ env-create() {
         ;;
     esac
 
+    echo "env-create: 🛠️ Activating the environment. 🛠️"
+    conda activate "$env_name"
+
     if [[ $? -eq 0 ]]; then
-        echo "env-create: 🎉 Successfully created $language Conda environment: $env_name with $language $version 🎉"
-        return 0
+        echo "env-create: 🎉 Successfully activated environment: $env_name 🎉"
     else
-        echo "env-create: ❌ Failed to create $language Conda environment. ❌"
+        echo "env-create: ❌ Failed to create R Conda environment. ❌"
         return 1
     fi
+
 }
 
 # === Remove a Conda environment ===
@@ -210,27 +244,17 @@ env-create() {
 env-remove() {
     verify_conda || return 1
 
-    if [[ $# -eq 0 || $# -gt 2 ]]; then
+    if [[ $# -eq 0 || $# -gt 1 ]]; then
         echo "env-remove: Incorrect number of arguments."
-        echo "env-remove: Usage: env-remove <env_name> [-y]"
+        echo "env-remove: Usage: env-remove <env_name>"
         echo "env-remove: ❌ Operation aborted. ❌"
         return 1
     fi
 
     local env_name="$1"
-    local yes_flag=""
-
-    if [[ $# -eq 2 && $2 == "-y" ]]; then
-        yes_flag="--yes"
-    elif [[ $# -eq 2 && $2 != "-y" ]]; then
-        echo "env-remove: Invalid option: $2"
-        echo "env-remove: Usage: env-remove <env_name> [-y]"
-        echo "env-remove: ❌ Operation aborted. ❌"
-        return 1
-    fi
 
     echo "env-remove: 🛠️ Removing Conda environment: $env_name 🛠️"
-    conda remove --name "$env_name" --all $yes_flag
+    conda remove --name "$env_name" --all -y
     if [[ $? -eq 0 ]]; then
         echo "env-remove: 🎉 Successfully removed Conda environment: $env_name 🎉"
         return 0
@@ -286,6 +310,90 @@ env-stop() {
         echo "env-stop: ❌ Failed to stop active Conda environment. ❌"
         return 1
     fi
+}
+
+# === Add or remove a package from a Conda environment ===
+
+env-pkg() {
+    verify_conda || return 1
+
+    if [[ $# -lt 2 ]]; then
+        echo "env-pkg: Insufficient arguments."
+        echo "env-pkg: Usage: env-pkg [--add|-a|--remove|-r] <package_name>"
+        echo "env-pkg: ❌ Operation aborted. ❌"
+        return 1
+    fi
+
+    local action=""
+    local package_name=""
+    local conda_env=""
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        -a | --add)
+            action="add"
+            shift
+            ;;
+        -r | --remove)
+            action="remove"
+            shift
+            ;;
+        *)
+            package_name="$1"
+            shift
+            ;;
+        esac
+    done
+
+    if [[ -z $action ]]; then
+        echo "env-pkg: Please specify an action: --add or --remove"
+        echo "env-pkg: Usage: env-pkg [--add|-a|--remove|-r] <package_name>"
+        echo "env-pkg: ❌ Operation aborted. ❌"
+        return 1
+    fi
+
+    if [[ -z $package_name ]]; then
+        echo "env-pkg: Please provide a package name."
+        echo "env-pkg: Usage: env-pkg [--add|-a|--remove|-r] <package_name>"
+        echo "env-pkg: ❌ Operation aborted. ❌"
+        return 1
+    fi
+
+    if [[ -z $CONDA_DEFAULT_ENV ]]; then
+        echo "env-pkg: No Conda environment activated."
+        echo "env-pkg: Please activate a Conda environment first."
+        echo "env-pkg: ❌ Operation aborted. ❌"
+        return 1
+    else
+        conda_env="$CONDA_DEFAULT_ENV"
+    fi
+
+    case $action in
+    "add")
+        echo "env-pkg: 🛠️ Adding package '$package_name' to environment '$conda_env'. 🛠️"
+        conda install -n "$conda_env" "$package_name"
+        if [[ $? -eq 0 ]]; then
+            echo "env-pkg: 🎉 Successfully added package '$package_name' to environment '$conda_env' 🎉"
+        else
+            echo "env-pkg: ❌ Failed to add package '$package_name' to environment '$conda_env' ❌"
+        fi
+        ;;
+    "remove")
+        echo "env-pkg: Removing package '$package_name' from environment '$conda_env'..."
+        conda remove -n "$conda_env" "$package_name"
+        if [[ $? -eq 0 ]]; then
+            echo "env-pkg: 🎉 Successfully removed package '$package_name' from environment '$conda_env' 🎉"
+        else
+            echo "env-pkg: ❌ Failed to remove package '$package_name' from environment '$conda_env' ❌"
+        fi
+        ;;
+    *)
+        echo "env-pkg: Unsupported action: $action"
+        echo "env-pkg: Please specify either --add or --remove"
+        echo "env-pkg: ❌ Operation aborted. ❌"
+        return 1
+        ;;
+    esac
 }
 
 # === List Conda environments ===
